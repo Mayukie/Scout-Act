@@ -1,0 +1,16 @@
+export type ChoiceKey = 'ก' | 'ข' | 'ค' | 'ง'
+
+export interface Question {
+  id: number
+  chapter: string
+  section: string
+  question: string
+  choices: Record<ChoiceKey, string>
+  answer: ChoiceKey
+  explanation: string
+}
+
+export interface AnsweredQuestion extends Question {
+  userAnswer: ChoiceKey
+  isCorrect: boolean
+}
