@@ -35,6 +35,19 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
+function thaiToInt(s: string): number {
+  const map: Record<string, string> = {
+    '๐':'0','๑':'1','๒':'2','๓':'3','๔':'4',
+    '๕':'5','๖':'6','๗':'7','๘':'8','๙':'9',
+  }
+  return parseInt(s.split('').map(c => map[c] ?? c).join('')) || 0
+}
+
+export function sectionToInt(section: string): number {
+  const m = section.match(/มาตรา\s*([๐-๙\d]+)/)
+  return m ? thaiToInt(m[1]) : 0
+}
+
 export function generateExam(): Question[] {
   const result: Question[] = []
   let nextId = 1
@@ -48,4 +61,12 @@ export function generateExam(): Question[] {
   }
 
   return result
+}
+
+export function generateScopedExam(from: number, to: number): Question[] {
+  const pool = questionBank.filter(q => {
+    const n = sectionToInt(q.section)
+    return n >= from && n <= to
+  })
+  return shuffle(pool).slice(0, 15).map((q, i) => ({ ...q, id: i + 1 }))
 }
