@@ -11,6 +11,7 @@ export type Question = {
   choices: Record<ChoiceKey, string>
   answer: ChoiceKey
   explanation: string
+  reference: string
 }
 
 export const questionBank: Question[] = [...q1, ...q2, ...q3].map((q, i) => ({ ...q, id: i + 1 }))

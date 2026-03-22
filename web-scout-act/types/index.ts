@@ -8,6 +8,7 @@ export interface Question {
   choices: Record<ChoiceKey, string>
   answer: ChoiceKey
   explanation: string
+  reference: string
 }
 
 export interface AnsweredQuestion extends Question {

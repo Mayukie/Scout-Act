@@ -120,6 +120,7 @@ export default function ExamPage() {
               explanation={q.explanation}
               section={q.section}
               chapter={q.chapter}
+              reference={q.reference}
             />
           )}
 
