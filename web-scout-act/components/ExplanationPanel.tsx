@@ -44,7 +44,7 @@ export default function ExplanationPanel({ isCorrect, correctChoiceKey, correctC
             <p className="text-xs text-indigo-600 font-medium mt-1">อ้างอิง: {section}</p>
           </>
         ) : (
-          <p className="text-slate-700 leading-relaxed">
+          <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
             <HighlightedReference text={reference} highlight={correctChoiceText} />
           </p>
         )}

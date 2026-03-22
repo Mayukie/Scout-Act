@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 export default function Home() {
   const router = useRouter()
@@ -38,6 +39,12 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-blue-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-8 max-w-sm w-full text-center space-y-6">
+        {/* Nav menu */}
+        <div className="flex gap-2 justify-center">
+          <span className="px-4 py-1.5 rounded-full bg-indigo-600 text-white text-sm font-semibold">สอบ</span>
+          <Link href="/law" className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 text-sm font-semibold transition-colors">อ่านกฎหมาย</Link>
+        </div>
+
         <div>
           <div className="text-5xl mb-3">⚜️</div>
           <h1 className="text-2xl font-bold text-slate-800">แบบทดสอบ</h1>

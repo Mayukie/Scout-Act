@@ -4,10 +4,21 @@ import q3 from './q3'
 import scoutAct from './scout_act_2551.json'
 import type { ChoiceKey } from '@/types'
 
+function cleanLawText(raw: string): string {
+  return raw
+    .replace(/^##\s+มาตรา\s+[๐-๙\d]+\s*\n+/, '')   // strip ## มาตรา N header
+    .split('\n')
+    .filter(line => {
+      const t = line.trim()
+      return t !== '' && !t.startsWith('*') && t !== '---' && !t.startsWith('###') && !t.startsWith('####')
+    })
+    .join('\n')
+    .trim()
+}
+
 const lawTextMap: Record<number, string> = {}
 for (const s of scoutAct.sections) {
-  const text = s.text.replace(/^##\s+มาตรา\s+[๐-๙\d]+\s*\n+/, '').trim()
-  lawTextMap[parseInt(s.section)] = text
+  lawTextMap[parseInt(s.section)] = cleanLawText(s.text)
 }
 
 export type Question = {
@@ -21,7 +32,11 @@ export type Question = {
   reference: string
 }
 
-export const questionBank: Question[] = [...q1, ...q2, ...q3].map((q, i) => ({ ...q, id: i + 1 }))
+export const questionBank: Question[] = [...q1, ...q2, ...q3].map((q, i) => ({
+  ...q,
+  id: i + 1,
+  reference: lawTextMap[sectionToInt(q.section)] || q.reference,
+}))
 
 export const EXAM_QUOTA: Record<string, number> = {
   'หมวด ๑': 2,
@@ -64,8 +79,7 @@ export function generateExam(): Question[] {
     const pool = questionBank.filter(q => q.chapter === chapter)
     const picked = shuffle(pool).slice(0, count)
     for (const q of picked) {
-      const fullText = lawTextMap[sectionToInt(q.section)]
-      result.push({ ...q, id: nextId++, reference: fullText || q.reference })
+      result.push({ ...q, id: nextId++ })
     }
   }
 
@@ -77,8 +91,5 @@ export function generateScopedExam(from: number, to: number): Question[] {
     const n = sectionToInt(q.section)
     return n >= from && n <= to
   })
-  return shuffle(pool).slice(0, 15).map((q, i) => {
-    const fullText = lawTextMap[sectionToInt(q.section)]
-    return { ...q, id: i + 1, reference: fullText || q.reference }
-  })
+  return shuffle(pool).slice(0, 15).map((q, i) => ({ ...q, id: i + 1 }))
 }
