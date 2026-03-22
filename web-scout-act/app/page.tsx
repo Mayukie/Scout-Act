@@ -3,12 +3,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-function toThai(n: number) {
-  return String(n).replace(/\d/g, d => '๐๑๒๓๔๕๖๗๘๙'[parseInt(d)])
-}
-
-const SECTION_OPTIONS = Array.from({ length: 60 }, (_, i) => i + 1)
-
 export default function Home() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -54,37 +48,35 @@ export default function Home() {
 
         {/* มาตรา range selector */}
         <div className="bg-slate-50 rounded-xl p-4 space-y-3 text-left">
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">ขอบเขตมาตรา</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">ขอบเขตมาตรา (๑–๖๐)</p>
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <label className="text-xs text-slate-500 mb-1 block">ตั้งแต่</label>
-              <select
+              <label className="text-xs text-slate-500 mb-1 block">ตั้งแต่มาตรา</label>
+              <input
+                type="number"
+                min={1}
+                max={60}
                 value={fromSection}
-                onChange={e => setFromSection(Number(e.target.value))}
+                onChange={e => setFromSection(Math.min(60, Math.max(1, Number(e.target.value) || 1)))}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
-              >
-                {SECTION_OPTIONS.map(n => (
-                  <option key={n} value={n}>มาตรา {toThai(n)}</option>
-                ))}
-              </select>
+              />
             </div>
             <span className="text-slate-400 mt-5">—</span>
             <div className="flex-1">
-              <label className="text-xs text-slate-500 mb-1 block">ถึง</label>
-              <select
+              <label className="text-xs text-slate-500 mb-1 block">ถึงมาตรา</label>
+              <input
+                type="number"
+                min={1}
+                max={60}
                 value={toSection}
-                onChange={e => setToSection(Number(e.target.value))}
+                onChange={e => setToSection(Math.min(60, Math.max(1, Number(e.target.value) || 60)))}
                 className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-300"
-              >
-                {SECTION_OPTIONS.map(n => (
-                  <option key={n} value={n}>มาตรา {toThai(n)}</option>
-                ))}
-              </select>
+              />
             </div>
           </div>
           {isScoped && (
             <p className="text-xs text-indigo-600 font-medium">
-              สอบเฉพาะมาตรา {toThai(fromSection)}–{toThai(toSection)}
+              สอบเฉพาะมาตรา {fromSection}–{toSection}
             </p>
           )}
           {!isScoped && (

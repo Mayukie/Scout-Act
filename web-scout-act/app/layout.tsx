@@ -16,7 +16,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th">
-      <body className={`${sarabun.variable} font-sans antialiased bg-slate-50`}>{children}</body>
+      <body className={`${sarabun.variable} font-sans antialiased bg-slate-50`}>
+        {children}
+        <footer className="text-center text-xs text-slate-400 py-4">v1.0</footer>
+      </body>
     </html>
   )
 }

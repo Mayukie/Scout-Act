@@ -12,14 +12,14 @@ Returns up to 15 randomly selected multiple-choice questions from พระร�
 
 ### Query Parameters
 
-| param | type | required | default | description |
-|-------|------|----------|---------|-------------|
-| `from` | number | no | — | มาตรา เริ่มต้น (Arabic numeral, 1–60) |
-| `to` | number | no | — | มาตรา สิ้นสุด (Arabic numeral, 1–60) |
+| param | type | required | description |
+|-------|------|----------|-------------|
+| `from` | number | no | มาตรา เริ่มต้น (Arabic numeral, 1–60) |
+| `to` | number | no | มาตรา สิ้นสุด (Arabic numeral, 1–60) |
 
 - If **neither** `from` nor `to` is provided → full exam mode (EXAM_QUOTA logic)
 - If **both** are provided → scoped mode (random 15 from the matching pool)
-- `from` must be ≤ `to`
+- `from` must be ≤ `to` (enforced by the caller; API does not validate)
 
 ### Examples
 
@@ -50,7 +50,7 @@ Uses `EXAM_QUOTA` to pick questions proportionally from every chapter.
 ## Mode 2: Scoped Exam (from + to)
 
 1. Filter `questionBank` where `sectionToInt(q.section)` is between `from` and `to` (inclusive)
-2. Shuffle filtered pool
+2. Shuffle filtered pool (Fisher-Yates)
 3. Slice first 15 (or fewer if pool is smaller)
 4. Assign sequential `id` starting from 1
 
@@ -91,7 +91,7 @@ HTTP 200
 | `question` | string | คำถาม (ภาษาไทย) |
 | `choices` | object | ตัวเลือก ก ข ค ง |
 | `answer` | `"ก"｜"ข"｜"ค"｜"ง"` | ตัวเลือกที่ถูกต้อง |
-| `explanation` | string | คำอธิบายพร้อมอ้างอิงมาตรา (ภาษาไทย) |
+| `explanation` | string | ข้อความอ้างอิงในกฎหมาย (ภาษาไทย) |
 
 ---
 
@@ -99,7 +99,7 @@ HTTP 200
 
 | caller | params sent | when |
 |--------|-------------|------|
-| `app/page.tsx` | `from`, `to` (if user selected range) | กดปุ่ม "เริ่มสอบ" |
+| `app/page.tsx` | `from`, `to` (if user typed a range) | กดปุ่ม "เริ่มสอบ" |
 | `app/exam/result/page.tsx` | none | กดปุ่ม "สร้างข้อสอบใหม่" (full exam) |
 
 ---
@@ -110,6 +110,6 @@ HTTP 200
 |------|------|
 | `app/api/questions/route.ts` | Next.js route handler, reads `from`/`to` from searchParams |
 | `lib/questionBank.ts` | `generateExam()`, `generateScopedExam(from, to)`, `sectionToInt()` |
-| `lib/q1.ts` | คำถามหมวด ๑ (~100 ข้อ) |
-| `lib/q2.ts` | คำถามหมวด ๒ (~120 ข้อ) |
-| `lib/q3.ts` | คำถามหมวด ๓–๗ และบทเฉพาะกาล (~80 ข้อ) |
+| `lib/q1.ts` | คำถามหมวด ๑ (มาตรา ๑–๑๐) |
+| `lib/q2.ts` | คำถามหมวด ๒ (มาตรา ๑๑–๓๖) |
+| `lib/q3.ts` | คำถามหมวด ๓–๗ และบทเฉพาะกาล (มาตรา ๓๗–๖๐) |

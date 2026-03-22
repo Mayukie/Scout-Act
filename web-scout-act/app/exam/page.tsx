@@ -17,6 +17,7 @@ export default function ExamPage() {
   const [answered, setAnswered] = useState(false)
   const [score, setScore] = useState(0)
   const [results, setResults] = useState<AnsweredQuestion[]>([])
+  const [showHint, setShowHint] = useState(false)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('examQuestions')
@@ -58,6 +59,7 @@ export default function ExamPage() {
       setIndex((i) => i + 1)
       setSelected(null)
       setAnswered(false)
+      setShowHint(false)
     }
   }
 
@@ -77,16 +79,23 @@ export default function ExamPage() {
 
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-5">
-          {/* Chapter tag */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
-              {q.chapter}
-            </span>
-            <span className="text-xs text-slate-400">{q.section}</span>
+          {/* Question + hint toggle */}
+          <div className="flex items-start justify-between gap-3">
+            <p className="text-lg font-semibold text-slate-800 leading-relaxed flex-1">{q.question}</p>
+            <button
+              onClick={() => setShowHint((h) => !h)}
+              title="ดูคำใบ้ (หมวด / มาตรา)"
+              className="mt-1 flex-shrink-0 w-7 h-7 rounded-full bg-slate-100 hover:bg-indigo-100 text-slate-400 hover:text-indigo-600 flex items-center justify-center transition-colors text-sm font-bold"
+            >
+              ?
+            </button>
           </div>
-
-          {/* Question */}
-          <p className="text-lg font-semibold text-slate-800 leading-relaxed">{q.question}</p>
+          {showHint && (
+            <div className="flex items-center gap-2 -mt-2">
+              <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{q.chapter}</span>
+              <span className="text-xs text-slate-400">{q.section}</span>
+            </div>
+          )}
 
           {/* Choices */}
           <div className="space-y-3">
@@ -110,6 +119,7 @@ export default function ExamPage() {
               correctChoiceText={q.choices[q.answer]}
               explanation={q.explanation}
               section={q.section}
+              chapter={q.chapter}
             />
           )}
 
