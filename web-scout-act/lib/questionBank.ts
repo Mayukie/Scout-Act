@@ -1,7 +1,14 @@
 import q1 from './q1'
 import q2 from './q2'
 import q3 from './q3'
+import scoutAct from './scout_act_2551.json'
 import type { ChoiceKey } from '@/types'
+
+const lawTextMap: Record<number, string> = {}
+for (const s of scoutAct.sections) {
+  const text = s.text.replace(/^##\s+มาตรา\s+[๐-๙\d]+\s*\n+/, '').trim()
+  lawTextMap[parseInt(s.section)] = text
+}
 
 export type Question = {
   id: number
@@ -57,7 +64,8 @@ export function generateExam(): Question[] {
     const pool = questionBank.filter(q => q.chapter === chapter)
     const picked = shuffle(pool).slice(0, count)
     for (const q of picked) {
-      result.push({ ...q, id: nextId++ })
+      const fullText = lawTextMap[sectionToInt(q.section)]
+      result.push({ ...q, id: nextId++, reference: fullText || q.reference })
     }
   }
 
@@ -69,5 +77,8 @@ export function generateScopedExam(from: number, to: number): Question[] {
     const n = sectionToInt(q.section)
     return n >= from && n <= to
   })
-  return shuffle(pool).slice(0, 15).map((q, i) => ({ ...q, id: i + 1 }))
+  return shuffle(pool).slice(0, 15).map((q, i) => {
+    const fullText = lawTextMap[sectionToInt(q.section)]
+    return { ...q, id: i + 1, reference: fullText || q.reference }
+  })
 }

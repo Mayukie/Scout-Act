@@ -16,7 +16,7 @@ function HighlightedReference({ text, highlight }: { text: string; highlight: st
   return (
     <>
       {text.slice(0, idx)}
-      <mark className="bg-yellow-200 text-yellow-900 font-semibold rounded px-0.5">{highlight}</mark>
+      <mark className="bg-yellow-200 text-yellow-900 font-bold rounded px-0.5">{highlight}</mark>
       {text.slice(idx + highlight.length)}
     </>
   )
