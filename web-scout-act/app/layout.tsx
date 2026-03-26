@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Sarabun } from 'next/font/google'
 import './globals.css'
+import { ThemeProvider } from '@/components/ThemeProvider'
+import ThemeToggle from '@/components/ThemeToggle'
 
 const sarabun = Sarabun({
   subsets: ['thai', 'latin'],
@@ -15,10 +17,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="th">
-      <body className={`${sarabun.variable} font-sans antialiased bg-slate-50`}>
-        {children}
-        <footer className="text-center text-xs text-slate-400 py-4">v2.0</footer>
+    <html lang="th" suppressHydrationWarning>
+      <head>
+        {/* Prevent flash of wrong theme */}
+        <script dangerouslySetInnerHTML={{ __html: `(function(){var t=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(t===null&&d)){document.documentElement.classList.add('dark')}})()` }} />
+      </head>
+      <body className={`${sarabun.variable} font-sans antialiased bg-slate-50 dark:bg-slate-900 transition-colors`}>
+        <ThemeProvider>
+          {children}
+          <footer className="text-center text-xs text-slate-400 dark:text-slate-600 py-4 flex items-center justify-center gap-3">
+            <ThemeToggle />
+            <span>v2.0</span>
+          </footer>
+        </ThemeProvider>
       </body>
     </html>
   )

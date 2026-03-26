@@ -11,10 +11,10 @@ interface ResultData {
 }
 
 function getLevel(pct: number) {
-  if (pct >= 90) return { label: 'ผ่านด้วยเกียรตินิยม', color: 'text-yellow-600', bg: 'bg-yellow-50', border: 'border-yellow-300', emoji: '🏆' }
-  if (pct >= 75) return { label: 'ผ่าน', color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-300', emoji: '✅' }
-  if (pct >= 60) return { label: 'ผ่านปานกลาง', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-300', emoji: '📘' }
-  return { label: 'ไม่ผ่าน — ควรทบทวนเนื้อหา', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-300', emoji: '📖' }
+  if (pct >= 90) return { label: 'ผ่านด้วยเกียรตินิยม', color: 'text-yellow-600 dark:text-yellow-400', bg: 'bg-yellow-50 dark:bg-yellow-900/20', border: 'border-yellow-300 dark:border-yellow-700', emoji: '🏆' }
+  if (pct >= 75) return { label: 'ผ่าน', color: 'text-green-700 dark:text-green-400', bg: 'bg-green-50 dark:bg-green-900/20', border: 'border-green-300 dark:border-green-700', emoji: '✅' }
+  if (pct >= 60) return { label: 'ผ่านปานกลาง', color: 'text-blue-700 dark:text-blue-400', bg: 'bg-blue-50 dark:bg-blue-900/20', border: 'border-blue-300 dark:border-blue-700', emoji: '📘' }
+  return { label: 'ไม่ผ่าน — ควรทบทวนเนื้อหา', color: 'text-red-700 dark:text-red-400', bg: 'bg-red-50 dark:bg-red-900/20', border: 'border-red-300 dark:border-red-700', emoji: '📖' }
 }
 
 export default function ResultPage() {
@@ -36,8 +36,8 @@ export default function ResultPage() {
   }
 
   if (!data) return (
-    <main className="min-h-screen flex items-center justify-center">
-      <p className="text-slate-500">กำลังโหลด...</p>
+    <main className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <p className="text-slate-500 dark:text-slate-400">กำลังโหลด...</p>
     </main>
   )
 
@@ -46,14 +46,14 @@ export default function ResultPage() {
   const wrong = data.results.filter((r) => !r.isCorrect)
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center py-8 px-4">
       <div className="w-full max-w-xl space-y-5">
 
         {/* Score card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 text-center space-y-3">
-          <p className="text-slate-500 font-medium">ผลการสอบพระราชบัญญัติลูกเสือ</p>
-          <div className="text-6xl font-bold text-indigo-600">{data.score}<span className="text-3xl text-slate-400">/{data.total}</span></div>
-          <p className="text-slate-500">{pct}%</p>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 text-center space-y-3">
+          <p className="text-slate-500 dark:text-slate-400 font-medium">ผลการสอบพระราชบัญญัติลูกเสือ</p>
+          <div className="text-6xl font-bold text-indigo-600 dark:text-indigo-400">{data.score}<span className="text-3xl text-slate-400 dark:text-slate-500">/{data.total}</span></div>
+          <p className="text-slate-500 dark:text-slate-400">{pct}%</p>
           <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border ${level.bg} ${level.border} ${level.color} font-semibold`}>
             <span>{level.emoji}</span>
             <span>{level.label}</span>
@@ -62,25 +62,25 @@ export default function ResultPage() {
 
         {/* Wrong answers */}
         {wrong.length > 0 && (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 space-y-4">
-            <h2 className="font-bold text-slate-700">ข้อที่ตอบผิด ({wrong.length} ข้อ)</h2>
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 space-y-4">
+            <h2 className="font-bold text-slate-700 dark:text-slate-200">ข้อที่ตอบผิด ({wrong.length} ข้อ)</h2>
             {wrong.map((r, i) => (
-              <div key={i} className="border border-slate-100 rounded-xl p-4 space-y-2">
-                <p className="text-sm font-semibold text-slate-700">{r.question}</p>
-                <p className="text-sm text-red-600">
+              <div key={i} className="border border-slate-100 dark:border-slate-700 rounded-xl p-4 space-y-2">
+                <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{r.question}</p>
+                <p className="text-sm text-red-600 dark:text-red-400">
                   คำตอบของคุณ: <span className="font-semibold">{r.userAnswer}. {r.choices[r.userAnswer]}</span>
                 </p>
-                <p className="text-sm text-green-700">
+                <p className="text-sm text-green-700 dark:text-green-400">
                   คำตอบที่ถูก: <span className="font-semibold">{r.answer}. {r.choices[r.answer]}</span>
                 </p>
-                <p className="text-xs text-slate-500 bg-slate-50 rounded-lg p-2 leading-relaxed">{r.explanation}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-700 rounded-lg p-2 leading-relaxed">{r.explanation}</p>
               </div>
             ))}
           </div>
         )}
 
         {wrong.length === 0 && (
-          <div className="bg-green-50 border border-green-200 rounded-2xl p-5 text-center text-green-700 font-semibold">
+          <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl p-5 text-center text-green-700 dark:text-green-400 font-semibold">
             🎉 ตอบถูกทุกข้อ! ยอดเยี่ยมมาก
           </div>
         )}
@@ -95,7 +95,7 @@ export default function ResultPage() {
           </button>
           <button
             onClick={() => router.push('/')}
-            className="flex-1 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold py-3 rounded-xl transition-colors"
+            className="flex-1 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 font-semibold py-3 rounded-xl transition-colors"
           >
             หน้าแรก
           </button>

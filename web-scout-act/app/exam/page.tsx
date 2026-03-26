@@ -27,8 +27,8 @@ export default function ExamPage() {
 
   if (questions.length === 0) {
     return (
-      <main className="min-h-screen flex items-center justify-center">
-        <p className="text-slate-500">กำลังโหลด...</p>
+      <main className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+        <p className="text-slate-500 dark:text-slate-400">กำลังโหลด...</p>
       </main>
     )
   }
@@ -72,28 +72,28 @@ export default function ExamPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 flex flex-col items-center py-8 px-4">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center py-8 px-4">
       <div className="w-full max-w-xl space-y-6">
         {/* Progress */}
         <ProgressBar current={index + 1} total={questions.length} score={score} />
 
         {/* Card */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 space-y-5">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 space-y-5">
           {/* Question + hint toggle */}
           <div className="flex items-start justify-between gap-3">
-            <p className="text-lg font-semibold text-slate-800 leading-relaxed flex-1">{q.question}</p>
+            <p className="text-lg font-semibold text-slate-800 dark:text-slate-100 leading-relaxed flex-1">{q.question}</p>
             <button
               onClick={() => setShowHint((h) => !h)}
               title="ดูคำใบ้ (หมวด / มาตรา)"
-              className="mt-1 flex-shrink-0 w-7 h-7 rounded-full bg-slate-100 hover:bg-indigo-100 text-slate-400 hover:text-indigo-600 flex items-center justify-center transition-colors text-sm font-bold"
+              className="mt-1 flex-shrink-0 w-7 h-7 rounded-full bg-slate-100 hover:bg-indigo-100 dark:bg-slate-700 dark:hover:bg-indigo-900 text-slate-400 hover:text-indigo-600 dark:text-slate-500 dark:hover:text-indigo-400 flex items-center justify-center transition-colors text-sm font-bold"
             >
               ?
             </button>
           </div>
           {showHint && (
             <div className="flex items-center gap-2 -mt-2">
-              <span className="text-xs font-semibold bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">{q.chapter}</span>
-              <span className="text-xs text-slate-400">{q.section}</span>
+              <span className="text-xs font-semibold bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full">{q.chapter}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{q.section}</span>
             </div>
           )}
 
