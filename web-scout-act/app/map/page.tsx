@@ -1,12 +1,15 @@
-import BottomNav from '@/components/BottomNav'
-import { MAP_CHAPTERS, KEY_CONNECTIONS, type ContentItem } from '@/lib/mapData'
+'use client'
 
-// ─── rendering components ────────────────────────────────────────────────────
+import { useState } from 'react'
+import BottomNav from '@/components/BottomNav'
+import { MAP_CHAPTERS, KEY_CONNECTIONS, type ChapterData, type ContentItem } from '@/lib/mapData'
+
+// ─── detail sub-components ────────────────────────────────────────────────────
 
 function Row({ label, text }: { label: string; text: string }) {
   return (
-    <div className="flex items-start gap-2 py-1 border-b border-slate-50 dark:border-slate-700/50 last:border-0">
-      <span className="shrink-0 text-xs font-bold text-slate-400 dark:text-slate-500 w-12 mt-0.5">{label}</span>
+    <div className="flex items-start gap-2 py-1 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
+      <span className="shrink-0 text-xs font-bold text-slate-400 dark:text-slate-500 w-14 mt-0.5">{label}</span>
       <span className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{text}</span>
     </div>
   )
@@ -14,31 +17,56 @@ function Row({ label, text }: { label: string; text: string }) {
 
 function Group({ title, color, facts }: { title: string; color: string; facts: string[] }) {
   return (
-    <div className={`rounded-lg border-l-2 ${color} pl-3 py-2 mb-2 space-y-1`}>
-      <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-1">{title}</p>
-      {facts.map((f, i) => (
-        <div key={i} className="flex items-start gap-2 py-0.5">
-          <span className="shrink-0 text-indigo-400 mt-0.5">→</span>
-          <span className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{f}</span>
-        </div>
-      ))}
+    <div className={`rounded-lg border-l-2 ${color} pl-3 py-2 mb-2`}>
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1.5">{title}</p>
+      <div className="space-y-1">
+        {facts.map((f, i) => (
+          <div key={i} className="flex items-start gap-1.5">
+            <span className="shrink-0 text-slate-400 mt-0.5 text-xs">•</span>
+            <span className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{f}</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
-function Content({ items }: { items: ContentItem[] }) {
+function BranchDetail({ items }: { items: ContentItem[] }) {
   return (
-    <>
+    <div className="py-2 space-y-1">
       {items.map((item, i) =>
         item.type === 'row'
           ? <Row key={i} label={item.label} text={item.text} />
           : <Group key={i} title={item.title} color={item.color} facts={item.facts} />
       )}
-    </>
+    </div>
   )
 }
 
-// ─── page ────────────────────────────────────────────────────────────────────
+// ─── one brace branch ─────────────────────────────────────────────────────────
+
+function Branch({ ch }: { ch: ChapterData }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(v => !v)}
+        className={`w-full flex items-center gap-2 rounded-xl border-l-4 ${ch.border} border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2.5 text-left active:opacity-70`}
+      >
+        <span className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${ch.badge} whitespace-nowrap`}>{ch.range}</span>
+        <span className={`flex-1 text-xs font-semibold ${ch.text} leading-snug`}>{ch.title}</span>
+        <span className={`shrink-0 text-slate-400 text-xs transition-transform duration-200 ${open ? 'rotate-90' : ''}`}>▶</span>
+      </button>
+      {open && (
+        <div className="mt-1 ml-1 pl-3 border-l border-dashed border-slate-200 dark:border-slate-600">
+          <BranchDetail items={ch.content} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── page ─────────────────────────────────────────────────────────────────────
 
 export default function MapPage() {
   return (
@@ -47,42 +75,53 @@ export default function MapPage() {
       {/* Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 px-4 pt-12 pb-4">
         <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100">แผนผังกฎหมาย</h1>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">พระราชบัญญัติลูกเสือ พ.ศ. ๒๕๕๑ — คลิกหมวดเพื่อขยาย</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">พ.ร.บ.ลูกเสือ พ.ศ. ๒๕๕๑ — แผนผังวงเล็บ</p>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-4 space-y-2">
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
 
-        {/* Root node */}
-        <div className="bg-indigo-600 dark:bg-indigo-700 rounded-2xl px-5 py-4 text-center shadow-sm mb-4">
-          <div className="text-2xl mb-1">⚜️</div>
-          <p className="text-white font-bold text-base">พ.ร.บ.ลูกเสือ พ.ศ. ๒๕๕๑</p>
-          <p className="text-indigo-200 text-xs mt-0.5">๗๔ มาตรา · ๕ หมวด · บทกำหนดโทษ · บทเฉพาะกาล</p>
+        {/* ── Brace Map ─────────────────────────────────────── */}
+        <div className="flex items-stretch">
+
+          {/* Whole node */}
+          <div className="w-20 shrink-0 flex items-center justify-center pr-1">
+            <div className="w-full bg-indigo-600 dark:bg-indigo-700 rounded-xl px-2 py-5 text-center shadow-sm">
+              <div className="text-2xl">⚜️</div>
+              <p className="text-white font-bold text-xs mt-1.5 leading-tight">พ.ร.บ.</p>
+              <p className="text-white font-bold text-xs leading-tight">ลูกเสือ</p>
+              <p className="text-indigo-200 text-[10px] mt-1.5">พ.ศ. ๒๕๕๑</p>
+              <p className="text-indigo-300 text-[10px]">๗๔ มาตรา</p>
+            </div>
+          </div>
+
+          {/* Brace — [ shape (vertical bar left, opening right) */}
+          <div className="w-5 shrink-0 flex flex-col self-stretch mx-0.5">
+            <div className="flex-1 border-l-2 border-t-2 rounded-tl-2xl border-indigo-300 dark:border-indigo-500"></div>
+            <div className="flex-1 border-l-2 border-b-2 rounded-bl-2xl border-indigo-300 dark:border-indigo-500"></div>
+          </div>
+
+          {/* Branch list */}
+          <div className="flex-1 flex flex-col gap-2">
+            {MAP_CHAPTERS.map((ch) => (
+              <div key={ch.id} className="flex items-start gap-1">
+                {/* Horizontal tick line */}
+                <div className="shrink-0 mt-4 h-0.5 w-3 bg-indigo-200 dark:bg-indigo-700"></div>
+                <div className="flex-1">
+                  <Branch ch={ch} />
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
 
-        {/* Chapter cards */}
-        {MAP_CHAPTERS.map((ch) => (
-          <details key={ch.id} className={`group rounded-xl border-l-4 ${ch.border} bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 overflow-hidden`}>
-            <summary className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none list-none">
-              <span className={`shrink-0 text-xs font-bold px-2 py-0.5 rounded-full ${ch.badge}`}>{ch.range}</span>
-              <span className={`flex-1 text-sm font-bold ${ch.text}`}>{ch.title}</span>
-              {ch.keyFact && (
-                <span className="hidden sm:block text-xs text-slate-400 dark:text-slate-500 truncate max-w-[120px]">{ch.keyFact}</span>
-              )}
-              <span className="text-slate-400 text-xs transition-transform duration-200 group-open:rotate-90">▶</span>
-            </summary>
-            <div className="px-4 pb-4 pt-1 border-t border-slate-100 dark:border-slate-700 space-y-1">
-              <Content items={ch.content} />
-            </div>
-          </details>
-        ))}
-
-        {/* Key connections */}
-        <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 rounded-xl px-4 py-3 space-y-2">
-          <p className="text-xs font-bold text-indigo-700 dark:text-indigo-400 uppercase tracking-wide">🔗 จุดเชื่อมสำคัญที่มักออกสอบ</p>
-          <div className="space-y-1">
+        {/* ── Key connections ────────────────────────────────── */}
+        <div className="bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 rounded-xl px-4 py-3">
+          <p className="text-xs font-bold text-indigo-700 dark:text-indigo-400 mb-2">จุดเชื่อมสำคัญที่มักออกสอบ</p>
+          <div className="space-y-1.5">
             {KEY_CONNECTIONS.map((fact, i) => (
-              <div key={i} className="flex items-start gap-2 py-0.5">
-                <span className="shrink-0 text-indigo-400 mt-0.5">→</span>
+              <div key={i} className="flex items-start gap-1.5">
+                <span className="shrink-0 text-indigo-400 mt-0.5 text-xs">•</span>
                 <span className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{fact}</span>
               </div>
             ))}
