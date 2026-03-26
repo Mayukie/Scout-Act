@@ -9,9 +9,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [fromSection, setFromSection] = useState(1)
-  const [toSection, setToSection] = useState(60)
+  const [toSection, setToSection] = useState(74)
 
-  const isScoped = fromSection !== 1 || toSection !== 60
+  const isScoped = fromSection !== 1 || toSection !== 74
 
   const startExam = async () => {
     if (fromSection > toSection) {
@@ -55,16 +55,16 @@ export default function Home() {
 
         {/* มาตรา range selector */}
         <div className="bg-slate-50 dark:bg-slate-900 rounded-xl p-4 space-y-3 text-left">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">ขอบเขตมาตรา (๑–๖๐)</p>
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">ขอบเขตมาตรา (๑–๗๔)</p>
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <label className="text-xs text-slate-500 dark:text-slate-400 mb-1 block">ตั้งแต่มาตรา</label>
               <input
                 type="number"
                 min={1}
-                max={60}
+                max={74}
                 value={fromSection}
-                onChange={e => setFromSection(Math.min(60, Math.max(1, Number(e.target.value) || 1)))}
+                onChange={e => setFromSection(Math.min(74, Math.max(1, Number(e.target.value) || 1)))}
                 className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-500"
               />
             </div>
@@ -74,9 +74,9 @@ export default function Home() {
               <input
                 type="number"
                 min={1}
-                max={60}
+                max={74}
                 value={toSection}
-                onChange={e => setToSection(Math.min(60, Math.max(1, Number(e.target.value) || 60)))}
+                onChange={e => setToSection(Math.min(74, Math.max(1, Number(e.target.value) || 74)))}
                 className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-500"
               />
             </div>
@@ -87,7 +87,7 @@ export default function Home() {
             </p>
           )}
           {!isScoped && (
-            <p className="text-xs text-slate-400 dark:text-slate-500">ครอบคลุมทุกมาตรา (๑–๖๐)</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">ครอบคลุมทุกมาตรา (๑–๗๔)</p>
           )}
         </div>
 
