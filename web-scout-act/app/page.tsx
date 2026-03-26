@@ -8,9 +8,11 @@ export default function Home() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [fromSection, setFromSection] = useState(1)
-  const [toSection, setToSection] = useState(74)
+  const [fromRaw, setFromRaw] = useState('1')
+  const [toRaw, setToRaw] = useState('74')
 
+  const fromSection = Math.min(74, Math.max(1, parseInt(fromRaw) || 1))
+  const toSection = Math.min(74, Math.max(1, parseInt(toRaw) || 74))
   const isScoped = fromSection !== 1 || toSection !== 74
 
   const startExam = async () => {
@@ -63,8 +65,9 @@ export default function Home() {
                 type="number"
                 min={1}
                 max={74}
-                value={fromSection}
-                onChange={e => setFromSection(Math.min(74, Math.max(1, Number(e.target.value) || 1)))}
+                value={fromRaw}
+                onChange={e => setFromRaw(e.target.value)}
+                onBlur={() => setFromRaw(String(fromSection))}
                 className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-500"
               />
             </div>
@@ -75,8 +78,9 @@ export default function Home() {
                 type="number"
                 min={1}
                 max={74}
-                value={toSection}
-                onChange={e => setToSection(Math.min(74, Math.max(1, Number(e.target.value) || 74)))}
+                value={toRaw}
+                onChange={e => setToRaw(e.target.value)}
+                onBlur={() => setToRaw(String(toSection))}
                 className="w-full border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-300 dark:focus:ring-indigo-500"
               />
             </div>
