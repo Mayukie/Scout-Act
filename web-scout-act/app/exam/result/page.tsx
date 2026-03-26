@@ -46,8 +46,8 @@ export default function ResultPage() {
   const wrong = data.results.filter((r) => !r.isCorrect)
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center py-8 px-4">
-      <div className="w-full max-w-xl space-y-5">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
+      <div className="w-full max-w-xl mx-auto px-4 pt-6 pb-10 space-y-5 flex-1">
 
         {/* Score card */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 text-center space-y-3">

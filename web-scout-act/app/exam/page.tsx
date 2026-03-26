@@ -27,7 +27,7 @@ export default function ExamPage() {
 
   if (questions.length === 0) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900">
+      <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <p className="text-slate-500 dark:text-slate-400">กำลังโหลด...</p>
       </main>
     )
@@ -72,8 +72,8 @@ export default function ExamPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col items-center py-8 px-4">
-      <div className="w-full max-w-xl space-y-6">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
+      <div className="w-full max-w-xl mx-auto px-4 pt-6 pb-10 space-y-5 flex-1">
         {/* Progress */}
         <ProgressBar current={index + 1} total={questions.length} score={score} />
 

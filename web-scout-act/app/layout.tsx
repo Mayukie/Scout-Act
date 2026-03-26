@@ -25,10 +25,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${sarabun.variable} font-sans antialiased bg-slate-50 dark:bg-slate-900 transition-colors`}>
         <ThemeProvider>
           {children}
-          <footer className="text-center text-xs text-slate-400 dark:text-slate-600 py-4 flex items-center justify-center gap-3">
+          <div className="fixed top-4 right-4 z-50">
             <ThemeToggle />
-            <span>v2.0</span>
-          </footer>
+          </div>
         </ThemeProvider>
       </body>
     </html>

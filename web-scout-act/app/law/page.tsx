@@ -1,6 +1,6 @@
-import Link from 'next/link'
 import scoutActData from '@/lib/scout_act_2551.json'
 import { keywordMap } from '@/lib/keywordSummary'
+import BottomNav from '@/components/BottomNav'
 
 // Chapter groups: section range → chapter label
 const CHAPTER_STARTS: Record<number, string> = {
@@ -40,18 +40,15 @@ export default function LawPage() {
   }))
 
   return (
-    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
-      <div className="max-w-2xl mx-auto space-y-4">
+    <main className="min-h-screen bg-slate-50 dark:bg-slate-900 pb-24">
 
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">← กลับ</Link>
-          <div className="flex-1">
-            <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100">พระราชบัญญัติลูกเสือ พ.ศ. ๒๕๕๑</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">ฉบับเต็ม ๗๔ มาตรา — คลิกมาตราเพื่อขยาย</p>
-          </div>
-          <Link href="/" className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-sm font-semibold transition-colors">สอบ</Link>
-        </div>
+      {/* Header */}
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 px-4 pt-12 pb-4">
+        <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100">พระราชบัญญัติลูกเสือ พ.ศ. ๒๕๕๑</h1>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ฉบับเต็ม ๗๔ มาตรา — คลิกมาตราเพื่อขยาย</p>
+      </div>
+
+      <div className="max-w-2xl mx-auto px-4 py-4 space-y-4">
 
         {/* Sections grouped by chapter */}
         {sections.map(({ num, text, meta }) => (
@@ -113,6 +110,8 @@ export default function LawPage() {
         ))}
 
       </div>
+
+      <BottomNav />
     </main>
   )
 }
