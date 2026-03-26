@@ -1,27 +1,44 @@
 import Link from 'next/link'
 import scoutActData from '@/lib/scout_act_2551.json'
+import { keywordMap } from '@/lib/keywordSummary'
 
-function renderSection(text: string) {
-  return text.split('\n').map((line, i) => {
-    const t = line.trim()
-    if (t === '' || t === '---') return null
-    if (t.startsWith('*') && t.endsWith('*')) return null
-    if (t.startsWith('#### ')) return (
-      <p key={i} className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mt-4">{t.slice(5)}</p>
-    )
-    if (t.startsWith('### ')) return (
-      <div key={i} className="mt-8 mb-2 pb-1 border-b border-indigo-100 dark:border-indigo-900">
-        <span className="text-sm font-bold text-indigo-700 dark:text-indigo-400">{t.slice(4)}</span>
-      </div>
-    )
-    if (t.startsWith('## ')) return (
-      <h2 key={i} className="text-base font-bold text-slate-800 dark:text-slate-100 mt-6 mb-1">{t.slice(3)}</h2>
-    )
-    return <p key={i} className="text-slate-700 dark:text-slate-300 leading-relaxed">{t}</p>
-  })
+// Chapter groups: section range → chapter label
+const CHAPTER_STARTS: Record<number, string> = {
+  1:  'บทนิยาม',
+  6:  'หมวด ๑ — บททั่วไป',
+  11: 'หมวด ๒ — การปกครอง',
+  43: 'หมวด ๓ — การจัดกลุ่ม ประเภท และตำแหน่งลูกเสือ',
+  50: 'หมวด ๔ — ธง เครื่องแบบ และการแต่งกาย',
+  53: 'หมวด ๕ — เหรียญลูกเสือ และการยกย่องเชิดชูเกียรติ',
+  69: 'บทกำหนดโทษ',
+  71: 'บทเฉพาะกาล',
+}
+
+function cleanLawText(raw: string): string {
+  return raw
+    .split('\n')
+    .filter(line => {
+      const t = line.trim()
+      return (
+        t !== '' &&
+        t !== '---' &&
+        !t.startsWith('##') &&
+        !t.startsWith('###') &&
+        !t.startsWith('####') &&
+        !(t.startsWith('*') && t.endsWith('*'))
+      )
+    })
+    .join('\n')
+    .trim()
 }
 
 export default function LawPage() {
+  const sections = scoutActData.sections.map(s => ({
+    num: parseInt(s.section),
+    text: cleanLawText(s.text),
+    meta: keywordMap.get(parseInt(s.section)),
+  }))
+
   return (
     <main className="min-h-screen bg-slate-50 dark:bg-slate-900 py-8 px-4">
       <div className="max-w-2xl mx-auto space-y-4">
@@ -31,21 +48,69 @@ export default function LawPage() {
           <Link href="/" className="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">← กลับ</Link>
           <div className="flex-1">
             <h1 className="text-lg font-bold text-slate-800 dark:text-slate-100">พระราชบัญญัติลูกเสือ พ.ศ. ๒๕๕๑</h1>
-            <p className="text-xs text-slate-500 dark:text-slate-400">ฉบับเต็ม ๖๐ มาตรา</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">ฉบับเต็ม ๗๔ มาตรา — คลิกมาตราเพื่อขยาย</p>
           </div>
           <Link href="/" className="px-4 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-300 text-sm font-semibold transition-colors">สอบ</Link>
         </div>
 
-        {/* Law content */}
-        <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6">
-          <div className="space-y-1">
-            {scoutActData.sections.map(s => (
-              <div key={s.section} id={`s${s.section}`}>
-                {renderSection(s.text)}
+        {/* Sections grouped by chapter */}
+        {sections.map(({ num, text, meta }) => (
+          <div key={num}>
+            {/* Chapter header divider */}
+            {CHAPTER_STARTS[num] && (
+              <div className="mt-6 mb-2 flex items-center gap-3">
+                <div className="flex-1 h-px bg-indigo-200 dark:bg-indigo-800" />
+                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide whitespace-nowrap">
+                  {CHAPTER_STARTS[num]}
+                </span>
+                <div className="flex-1 h-px bg-indigo-200 dark:bg-indigo-800" />
               </div>
-            ))}
+            )}
+
+            {/* Accordion item */}
+            <details className="group bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+              <summary className="flex items-center gap-3 px-4 py-3 cursor-pointer select-none list-none hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                {/* Section badge */}
+                <span className="shrink-0 text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/40 px-2 py-0.5 rounded-full">
+                  ม.{num}
+                </span>
+                {/* Title */}
+                <span className="flex-1 text-sm font-semibold text-slate-700 dark:text-slate-200">
+                  {meta?.title ?? `มาตรา ${num}`}
+                </span>
+                {/* Expand chevron */}
+                <span className="text-slate-400 dark:text-slate-500 text-xs transition-transform group-open:rotate-90">▶</span>
+              </summary>
+
+              {/* Expanded content */}
+              <div className="px-4 pb-4 pt-1 space-y-3 border-t border-slate-100 dark:border-slate-700">
+
+                {/* Law text */}
+                <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-sm whitespace-pre-wrap">{text}</p>
+
+                {/* Keywords */}
+                {meta && (
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap gap-1.5 items-center">
+                      <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wide mr-1">คำสำคัญ</span>
+                      {meta.keywords.map((kw, i) => (
+                        <span key={i} className="text-xs font-medium bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-800">
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Mnemonic */}
+                    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg px-3 py-2">
+                      <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 mr-1">💡 สูตรจำ:</span>
+                      <span className="text-xs text-amber-800 dark:text-amber-300">{meta.mnemonic}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </details>
           </div>
-        </div>
+        ))}
 
       </div>
     </main>
