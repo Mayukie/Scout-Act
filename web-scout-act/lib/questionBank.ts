@@ -40,13 +40,12 @@ export const questionBank: Question[] = [...q1, ...q2, ...q3].map((q, i) => ({
 
 export const EXAM_QUOTA: Record<string, number> = {
   'หมวด ๑': 2,
-  'หมวด ๒': 5,
+  'หมวด ๒': 4,
   'หมวด ๓': 2,
   'หมวด ๔': 1,
-  'หมวด ๕': 2,
-  'หมวด ๖': 1,
-  'หมวด ๗': 1,
-  'บทเฉพาะกาล': 1,
+  'หมวด ๕': 3,
+  'บทกำหนดโทษ': 1,
+  'บทเฉพาะกาล': 2,
 }
 
 function shuffle<T>(arr: T[]): T[] {
