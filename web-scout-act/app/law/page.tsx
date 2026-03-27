@@ -1,18 +1,7 @@
 import scoutActData from '@/lib/scout_act_2551.json'
 import { keywordMap } from '@/lib/keywordSummary'
+import { DIVIDERS_BEFORE } from '@/lib/lawStructure'
 import BottomNav from '@/components/BottomNav'
-
-// Chapter groups: section range → chapter label
-const CHAPTER_STARTS: Record<number, string> = {
-  1:  'บทนิยาม',
-  6:  'หมวด ๑ — บททั่วไป',
-  11: 'หมวด ๒ — การปกครอง',
-  43: 'หมวด ๓ — การจัดกลุ่ม ประเภท และตำแหน่งลูกเสือ',
-  50: 'หมวด ๔ — ธง เครื่องแบบ และการแต่งกาย',
-  53: 'หมวด ๕ — เหรียญลูกเสือ และการยกย่องเชิดชูเกียรติ',
-  69: 'บทกำหนดโทษ',
-  71: 'บทเฉพาะกาล',
-}
 
 function cleanLawText(raw: string): string {
   return raw
@@ -53,15 +42,26 @@ export default function LawPage() {
         {/* Sections grouped by chapter */}
         {sections.map(({ num, text, meta }) => (
           <div key={num}>
-            {/* Chapter header divider */}
-            {CHAPTER_STARTS[num] && (
-              <div className="mt-6 mb-2 flex items-center gap-3">
-                <div className="flex-1 h-px bg-indigo-200 dark:bg-indigo-800" />
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide whitespace-nowrap">
-                  {CHAPTER_STARTS[num]}
-                </span>
-                <div className="flex-1 h-px bg-indigo-200 dark:bg-indigo-800" />
-              </div>
+            {/* Chapter and sub-section dividers */}
+            {DIVIDERS_BEFORE.get(num)?.map((d, di) =>
+              d.kind === 'chapter' ? (
+                /* หมวด header — indigo, prominent */
+                <div key={di} className="mt-6 mb-2 flex items-center gap-3">
+                  <div className="flex-1 h-px bg-indigo-200 dark:bg-indigo-800" />
+                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide whitespace-nowrap">
+                    {d.label}
+                  </span>
+                  <div className="flex-1 h-px bg-indigo-200 dark:bg-indigo-800" />
+                </div>
+              ) : (
+                /* ส่วนที่ sub-header — slate, indented, subordinate */
+                <div key={di} className="mt-2 mb-1 flex items-center gap-2 pl-3">
+                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                    {d.label}
+                  </span>
+                  <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                </div>
+              )
             )}
 
             {/* Accordion item */}
