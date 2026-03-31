@@ -2,6 +2,7 @@ export type ChoiceKey = 'ก' | 'ข' | 'ค' | 'ง'
 
 export interface Question {
   id: number
+  originalId: number
   chapter: string
   section: string
   question: string

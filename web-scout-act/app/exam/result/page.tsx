@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import type { AnsweredQuestion } from '@/types'
+import { addMastered, getMastered, clearMastered } from '@/lib/masteredQuestions'
 
 interface ResultData {
   results: AnsweredQuestion[]
@@ -20,15 +21,24 @@ function getLevel(pct: number) {
 export default function ResultPage() {
   const router = useRouter()
   const [data, setData] = useState<ResultData | null>(null)
+  const [totalMastered, setTotalMastered] = useState(0)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('examResults')
     if (!raw) { router.replace('/'); return }
-    setData(JSON.parse(raw))
+    const parsed: ResultData = JSON.parse(raw)
+    setData(parsed)
+    const correctIds = parsed.results
+      .filter(r => r.isCorrect)
+      .map(r => r.originalId)
+    if (correctIds.length > 0) addMastered(correctIds)
+    setTotalMastered(getMastered().size)
   }, [router])
 
   const newExam = async () => {
-    const res = await fetch('/api/questions')
+    const mastered = getMastered()
+    const params = mastered.size > 0 ? `?exclude=${[...mastered].join(',')}` : ''
+    const res = await fetch(`/api/questions${params}`)
     const json = await res.json()
     sessionStorage.setItem('examQuestions', JSON.stringify(json.questions))
     sessionStorage.removeItem('examResults')
@@ -58,6 +68,11 @@ export default function ResultPage() {
             <span>{level.emoji}</span>
             <span>{level.label}</span>
           </div>
+          {totalMastered > 0 && (
+            <p className="text-xs text-slate-400 dark:text-slate-500 pt-1">
+              ข้อที่ตอบถูกสะสม <span className="font-semibold text-indigo-500 dark:text-indigo-400">{totalMastered} ข้อ</span> — จะไม่ซ้ำในรอบถัดไป
+            </p>
+          )}
         </div>
 
         {/* Wrong answers */}
@@ -100,6 +115,16 @@ export default function ResultPage() {
             หน้าแรก
           </button>
         </div>
+
+        {/* Reset mastered */}
+        {totalMastered > 0 && (
+          <button
+            onClick={() => { clearMastered(); setTotalMastered(0) }}
+            className="w-full border border-red-200 dark:border-red-800 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 font-medium py-3 rounded-xl transition-colors text-sm"
+          >
+            รีเซ็ตข้อที่ตอบถูกทั้งหมด ({totalMastered} ข้อ)
+          </button>
+        )}
       </div>
     </main>
   )

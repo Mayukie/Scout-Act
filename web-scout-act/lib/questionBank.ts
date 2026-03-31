@@ -1,6 +1,5 @@
-import q1 from './q1'
-import q2 from './q2'
-import q3 from './q3'
+import q4 from './q4'
+import q5 from './q5'
 import scoutAct from './scout_act_2551.json'
 import type { ChoiceKey } from '@/types'
 
@@ -32,9 +31,10 @@ export type Question = {
   reference: string
 }
 
-export const questionBank: Question[] = [...q1, ...q2, ...q3].map((q, i) => ({
+export const questionBank: Question[] = [...q4, ...q5].map((q, i) => ({
   ...q,
   id: i + 1,
+  originalId: i + 1,
   reference: lawTextMap[sectionToInt(q.section)] || q.reference,
 }))
 
@@ -70,12 +70,14 @@ export function sectionToInt(section: string): number {
   return m ? thaiToInt(m[1]) : 0
 }
 
-export function generateExam(): Question[] {
+export function generateExam(exclude: Set<number> = new Set()): Question[] {
   const result: Question[] = []
   let nextId = 1
 
   for (const [chapter, count] of Object.entries(EXAM_QUOTA)) {
-    const pool = questionBank.filter(q => q.chapter === chapter)
+    const all = questionBank.filter(q => q.chapter === chapter)
+    const fresh = all.filter(q => !exclude.has(q.originalId))
+    const pool = fresh.length >= count ? fresh : all
     const picked = shuffle(pool).slice(0, count)
     for (const q of picked) {
       result.push({ ...q, id: nextId++ })
@@ -85,10 +87,12 @@ export function generateExam(): Question[] {
   return result
 }
 
-export function generateScopedExam(from: number, to: number): Question[] {
-  const pool = questionBank.filter(q => {
+export function generateScopedExam(from: number, to: number, exclude: Set<number> = new Set()): Question[] {
+  const all = questionBank.filter(q => {
     const n = sectionToInt(q.section)
     return n >= from && n <= to
   })
+  const fresh = all.filter(q => !exclude.has(q.originalId))
+  const pool = fresh.length >= 15 ? fresh : all
   return shuffle(pool).slice(0, 15).map((q, i) => ({ ...q, id: i + 1 }))
 }
