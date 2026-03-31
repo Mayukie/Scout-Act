@@ -37,7 +37,7 @@ export default function ResultPage() {
 
   const newExam = async () => {
     const mastered = getMastered()
-    const params = mastered.size > 0 ? `?exclude=${[...mastered].join(',')}` : ''
+    const params = mastered.size > 0 ? `?exclude=${Array.from(mastered).join(',')}` : ''
     const res = await fetch(`/api/questions${params}`)
     const json = await res.json()
     sessionStorage.setItem('examQuestions', JSON.stringify(json.questions))

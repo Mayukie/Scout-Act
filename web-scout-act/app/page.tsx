@@ -39,7 +39,7 @@ export default function Home() {
       }
       const mastered = getMastered()
       if (mastered.size > 0) {
-        params.set('exclude', [...mastered].join(','))
+        params.set('exclude', Array.from(mastered).join(','))
       }
       const res = await fetch(`/api/questions?${params}`)
       const data = await res.json()

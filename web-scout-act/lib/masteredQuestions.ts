@@ -27,7 +27,7 @@ export function addMastered(ids: number[]): void {
   if (!storage) return
   const current = getMastered()
   for (const id of ids) current.add(id)
-  storage.setItem(KEY, JSON.stringify([...current]))
+  storage.setItem(KEY, JSON.stringify(Array.from(current)))
 }
 
 export function clearMastered(): void {
