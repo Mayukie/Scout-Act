@@ -1,4 +1,3 @@
-import q4 from './q4'
 import q5 from './q5'
 import scoutAct from './scout_act_2551.json'
 import type { ChoiceKey } from '@/types'
@@ -31,7 +30,7 @@ export type Question = {
   reference: string
 }
 
-export const questionBank: Question[] = [...q4, ...q5].map((q, i) => ({
+export const questionBank: Question[] = [...q5].map((q, i) => ({
   ...q,
   id: i + 1,
   originalId: i + 1,
