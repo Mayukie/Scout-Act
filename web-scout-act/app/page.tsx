@@ -146,7 +146,7 @@ export default function Home() {
         {/* Exam info */}
         <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-2xl border border-indigo-100 dark:border-indigo-900/40 p-5 space-y-2">
           <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
-            <span className="text-lg">📋</span><span>จำนวน <strong>15 ข้อ</strong></span>
+            <span className="text-lg">📋</span><span>จำนวน <strong>20 ข้อ</strong></span>
           </div>
           <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-300">
             <span className="text-lg">🔤</span><span>ปรนัย <strong>ก / ข / ค / ง</strong></span>

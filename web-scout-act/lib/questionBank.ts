@@ -49,11 +49,11 @@ export const questionBank: Question[] = [...q5].map((q, i) => ({
 }))
 
 export const EXAM_QUOTA: Record<string, number> = {
-  'หมวด ๑': 2,
-  'หมวด ๒': 4,
-  'หมวด ๓': 2,
-  'หมวด ๔': 1,
-  'หมวด ๕': 3,
+  'หมวด ๑': 3,
+  'หมวด ๒': 5,
+  'หมวด ๓': 3,
+  'หมวด ๔': 2,
+  'หมวด ๕': 4,
   'บทกำหนดโทษ': 1,
   'บทเฉพาะกาล': 2,
 }
@@ -81,6 +81,6 @@ export function generateScopedExam(from: number, to: number, exclude: Set<number
     return n >= from && n <= to
   })
   const fresh = all.filter(q => !exclude.has(q.originalId))
-  const pool = fresh.length >= 15 ? fresh : all
-  return shuffle(pool).slice(0, 15).map((q, i) => ({ ...q, id: i + 1 }))
+  const pool = fresh.length >= 20 ? fresh : all
+  return shuffle(pool).slice(0, 20).map((q, i) => ({ ...q, id: i + 1 }))
 }

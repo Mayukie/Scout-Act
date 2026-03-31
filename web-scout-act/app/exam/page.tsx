@@ -18,12 +18,42 @@ export default function ExamPage() {
   const [score, setScore] = useState(0)
   const [results, setResults] = useState<AnsweredQuestion[]>([])
   const [showHint, setShowHint] = useState(false)
+  const [timeLeft, setTimeLeft] = useState(20 * 60)
 
   useEffect(() => {
     const raw = sessionStorage.getItem('examQuestions')
     if (!raw) { router.replace('/'); return }
     setQuestions(JSON.parse(raw))
   }, [router])
+
+  const timerActive = questions.length > 0 && timeLeft > 0
+  useEffect(() => {
+    if (!timerActive) return
+    const id = setInterval(() => {
+      setTimeLeft((t) => (t <= 1 ? 0 : t - 1))
+    }, 1000)
+    return () => clearInterval(id)
+  }, [timerActive])
+
+  useEffect(() => {
+    if (timeLeft !== 0 || questions.length === 0) return
+    // Auto-submit: answered so far + remaining treated as wrong
+    setResults((currentResults) => {
+      const answeredIds = new Set(currentResults.map((r) => r.id))
+      const unanswered: AnsweredQuestion[] = questions
+        .filter((q) => !answeredIds.has(q.id))
+        .map((q) => ({ ...q, userAnswer: 'ก' as ChoiceKey, isCorrect: false }))
+      const finalResults = [...currentResults, ...unanswered]
+      const finalScore = finalResults.filter((r) => r.isCorrect).length
+      sessionStorage.setItem('examResults', JSON.stringify({
+        results: finalResults,
+        score: finalScore,
+        total: questions.length,
+      }))
+      router.push('/exam/result')
+      return finalResults
+    })
+  }, [timeLeft, questions, router])
 
   if (questions.length === 0) {
     return (
@@ -75,7 +105,7 @@ export default function ExamPage() {
     <main className="min-h-screen bg-slate-50 dark:bg-slate-900 flex flex-col">
       <div className="w-full max-w-xl mx-auto px-4 pt-6 pb-10 space-y-5 flex-1">
         {/* Progress */}
-        <ProgressBar current={index + 1} total={questions.length} score={score} />
+        <ProgressBar current={index + 1} total={questions.length} score={score} timeLeft={timeLeft} />
 
         {/* Card */}
         <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 space-y-5">
