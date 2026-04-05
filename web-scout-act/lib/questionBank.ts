@@ -44,7 +44,7 @@ for (const s of scoutAct.sections) {
 export const questionBank: Question[] = [...q5].map((q, i) => ({
   ...q,
   id: i + 1,
-  originalId: i + 1,
+  originalId: q.seq,
   reference: lawTextMap[sectionToInt(q.section)] || q.reference,
 }))
 
