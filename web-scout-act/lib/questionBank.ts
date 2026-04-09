@@ -1,6 +1,7 @@
 import q1 from './q1'
 import q2 from './q2'
 import q3 from './q3'
+import q5 from './q5'
 import scoutAct from './scout_act_2551.json'
 import type { ChoiceKey } from '@/types'
 
@@ -32,7 +33,7 @@ export type Question = {
   reference: string
 }
 
-export const questionBank: Question[] = [...q1, ...q2, ...q3].map((q, i) => ({
+export const questionBank: Question[] = [...q1, ...q2, ...q3, ...q5].map((q, i) => ({
   ...q,
   id: i + 1,
   reference: lawTextMap[sectionToInt(q.section)] || q.reference,
